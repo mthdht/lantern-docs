@@ -28,7 +28,7 @@ Components are split into two independent layers that work together:
 - State management and reactive logic
 - Accessibility (ARIA attributes, keyboard navigation)
 - Event handling and behavior
-- Completely unstyled—work with any design system
+- Completely unstyled. work with any design system
 
 **Styled Components** add the visuals:
 - Consume the theme configuration
@@ -70,7 +70,7 @@ Lantern resolves styling through a **three-level priority system**. Each level c
 <div style="padding: 1.5rem; border-left: 4px solid #3b82f6; background: #eff6ff; border-radius: 0.5rem; margin: 1rem 0;">
 
 **Level 1: Global Theme** (Foundation)  
-Define your design system's base values—colors, sizes, spacing. These apply everywhere.
+Define your design system's base values. colors, sizes, spacing. These apply everywhere.
 
 ↓
 
@@ -92,7 +92,7 @@ The beauty of this system is **progressive enhancement**: start with global defa
 
 ### 3. Framework-Agnostic Class System
 
-At its core, Lantern is a **class application system**. The theme maps semantic concepts to CSS class strings—nothing more, nothing less.
+At its core, Lantern is a **class application system**. The theme maps semantic concepts to CSS class strings. Nothing more, nothing less.
 
 The system is built around three concepts:
 
@@ -100,7 +100,7 @@ The system is built around three concepts:
 **Variants** → Visual styles (filled, outline, ghost, etc.)  
 **Keys** → Properties to style (background, foreground, hover, border, etc.)
 
-Each key maps to a **string of CSS classes**—any classes you want:
+Each key maps to a **string of CSS classes**. Any classes you want:
 
 ```typescript
 {
@@ -129,7 +129,7 @@ Each key maps to a **string of CSS classes**—any classes you want:
 - Mix and match multiple approaches
 
 :::tip Framework-Agnostic
-At its core, Lantern is a **class application system**. The theme maps semantic concepts to CSS class strings—nothing more, nothing less. Lantern doesn't process CSS—it just applies the class strings you define. The actual styling is entirely up to you.
+At its core, Lantern is a **class application system**. The theme maps semantic concepts to CSS class strings. Nothing more, nothing less. Lantern doesn't process CSS. It just applies the class strings you define. The actual styling is entirely up to you.
 :::
 
 ## Architecture Overview
@@ -142,7 +142,7 @@ The global theme serves as the foundation for all styling in your application. T
 
 It's structured in two distinct parts:
 
-**1. Colors** — The semantic styling system
+**1. Colors** .  The semantic styling system
 
 ```typescript
 theme = {
@@ -173,7 +173,7 @@ Colors work through a three-level hierarchy: **color → variant → keys**.
 
 When you use `<Button color="primary" variant="outline">`, Lantern looks up `colors.primary.outline` and applies the classes from the keys that the button needs (defined in its spec).
 
-**2. Props** — Simple key-value mappings
+**2. Props** .  Simple key-value mappings
 
 ```typescript
 theme = {
@@ -199,7 +199,7 @@ theme = {
 Everything else (size, radius, spacing, shadow, etc.) are straightforward presets. When a component **receives a prop** like `size="lg"`, Lantern retrieves `theme.size.lg` and applies those classes.
 
 :::warning Important Distinction
-Theme props are only applied if the component **accepts that prop**. Adding `spacing` to your theme doesn't automatically make it available—you need to add `spacing?: string` to your component's props first.
+Theme props are only applied if the component **accepts that prop**. Adding `spacing` to your theme doesn't automatically make it available. You need to add `spacing?: string` to your component's props first.
 
 ```vue
 <!-- This works if Button has a 'size' prop -->
@@ -210,7 +210,7 @@ Theme props are only applied if the component **accepts that prop**. Adding `spa
 ```
 :::
 
-**You're not limited to size and radius**—add whatever your design system needs: `spacing`, `elevation`, `typography`, etc. Just remember to add the corresponding props to components that should use them.
+**You're not limited to size and radius**. Add whatever your design system needs: `spacing`, `elevation`, `typography`, etc. Just remember to add the corresponding props to components that should use them.
 
 → **[Explore the Theme System in depth](./theme-system)**
 
@@ -243,10 +243,10 @@ buttonSpec = {
 }
 ```
 
-**The `apply` array** determines which styling keys are extracted from the color/variant combination. For example, `['hover', 'focus']` means only the `hover` and `focus` classes will be applied—even if the color variant defines additional keys like `border` or `shadow`. This gives precise control over which styles each component uses.
+**The `apply` array** determines which styling keys are extracted from the color/variant combination. For example, `['hover', 'focus']` means only the `hover` and `focus` classes will be applied, even if the color variant defines additional keys like `border` or `shadow`. This gives precise control over which styles each component uses.
 
 :::tip Auto-Applied Keys
-`background` and `foreground` are always included automatically as they're considered essential base styles—no need to add them to the `apply` array.
+`background` and `foreground` are always included automatically as they're considered essential base styles. No need to add them to the `apply` array.
 :::
 
 **The `class` property** defines base classes applied to every instance of the component, regardless of props.
@@ -284,7 +284,7 @@ Use our styled components with default themes for rapid development. Customize c
 Use primitives directly and bring your own styling system. Lantern primitives handle the hard parts (state, a11y, keyboard nav) while you maintain complete control over appearance.
 
 ### You want flexibility
-Mix and match: use styled components where they fit, primitives where you need custom designs. Override at any level—global, component, or instance.
+Mix and match: use styled components where they fit, primitives where you need custom designs. Override at any level. global, component, or instance.
 
 ## Comparison with Other Libraries
 
