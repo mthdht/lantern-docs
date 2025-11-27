@@ -22,44 +22,73 @@ Lantern is built on three core principles:
 
 ### 1. Separation of Concerns
 
-Components are split into two layers:
+Components are split into two independent layers that work together:
 
+**Primitives (Headless)** provide the foundation:
+- State management and reactive logic
+- Accessibility (ARIA attributes, keyboard navigation)
+- Event handling and behavior
+- Completely unstyled—work with any design system
+
+**Styled Components** add the visuals:
+- Consume the theme configuration
+- Apply component specs
+- Merge with custom classes
+- Built on top of primitives (optional)
+
+```vue
+<script setup>
+// Import from primitives for full control
+//import { Button } from 'lantern-ui/primitives/button'
+
+// Or from components for styled versions
+//import { Button } from 'lantern-ui/components/button'
+</script>
+
+<template>
+  <!-- Primitive: bring your own styles -->
+  <Button @click="submit" disabled class="my-custom-styles">
+    Submit
+  </Button>
+
+  <!-- Styled: uses theme automatically -->
+  <Button color="primary" @click="submit" disabled>
+    Submit
+  </Button>
+</template>
 ```
-┌─────────────────────────────────────────┐
-│  Styled Components (Optional)           │
-│  └─ Apply theme, specs, custom classes  │
-└─────────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────────┐
-│  Primitives (Headless)                  │
-│  └─ Logic, state, a11y, behavior        │
-└─────────────────────────────────────────┘
-```
 
-**Primitives** handle logic, state management, accessibility, and keyboard interactions. They're completely unstyled and work with any design system.
-
-**Styled Components** wrap primitives and apply your theme configuration, component specs, and custom classes through a unified system.
+This architecture means you can:
+- **Start fast** with styled components and sensible defaults
+- **Go deep** by using primitives when you need pixel-perfect control
+- **Mix both** approaches in the same project
 
 ### 2. Hierarchical Customization
 
-Lantern uses a clear priority system for styling:
+Lantern resolves styling through a **three-level priority system**. Each level can override the previous one, giving you precise control at every stage:
 
-```
-Props (highest priority)
-  ↓
-Component Specs
-  ↓
-Global Theme (fallback)
-```
+<div style="padding: 1.5rem; border-left: 4px solid #3b82f6; background: #eff6ff; border-radius: 0.5rem; margin: 1rem 0;">
 
-:::warning Priority System
-This hierarchy is **always respected**. Props override specs, specs override theme. Understanding this flow is crucial for effective customization.
+**Level 1: Global Theme** (Foundation)  
+Define your design system's base values—colors, sizes, spacing. These apply everywhere.
+
+↓
+
+**Level 2: Component Specs** (Refinement)  
+Override specific components that need different defaults or custom styling.
+
+↓
+
+**Level 3: Props** (Final Word)  
+Instance-level customization for one-off variations.
+
+</div>
+
+:::warning Critical Concept
+This hierarchy is **always enforced**. Props beat specs, specs beat theme. There are no exceptions. Understanding this flow is essential for effective customization.
 :::
 
-This means you can:
-- Set sensible defaults in your **global theme**
-- Override specific components via **specs**
-- Fine-tune individual instances with **props**
+The beauty of this system is **progressive enhancement**: start with global defaults, refine per-component, tweak per-instance. You only customize what needs to be different.
 
 ### 3. Framework-Agnostic Class System
 
@@ -99,40 +128,89 @@ Each key maps to a **string of CSS classes**—any classes you want:
 - Your own custom classes
 - Mix and match multiple approaches
 
-:::info Key Concept
-Lantern doesn't process CSS—it just applies the class strings you define. The actual styling is entirely up to you.
+:::tip Framework-Agnostic
+At its core, Lantern is a **class application system**. The theme maps semantic concepts to CSS class strings—nothing more, nothing less. Lantern doesn't process CSS—it just applies the class strings you define. The actual styling is entirely up to you.
 :::
 
 ## Architecture Overview
 
-Lantern's architecture revolves around two key concepts: the **global theme** and **component specs**. Understanding how they work together is essential to mastering customization.
+Let's dive deeper into how Lantern actually works. Understanding these concepts will unlock the full power of the system.
 
 ### The Theme System
 
-The global theme serves as the foundation for all styling in your application. It's structured in two parts:
+The global theme serves as the foundation for all styling in your application. Think of it as your design system's source of truth.
+
+It's structured in two distinct parts:
+
+**1. Colors** — The semantic styling system
 
 ```typescript
 theme = {
   colors: {
     primary: {
-      filled: { /* ... */ },
-      outline: { /* ... */ }
-    },
-    danger: { /* ... */ }
-  },
-  
-  size: { sm: '...', md: '...', lg: '...' },
-  radius: { none: '...', sm: '...', full: '...' },
-  spacing: { /* ... */ },
-  shadow: { /* ... */ }
+      filled: {
+        background: 'bg-blue-600',
+        foreground: 'text-white',
+        hover: 'hover:bg-blue-700',
+        focus: 'focus:ring-2 focus:ring-blue-500'
+      },
+      outline: {
+        background: 'bg-transparent',
+        foreground: 'text-blue-600',
+        border: 'border-2 border-blue-600',
+        hover: 'hover:bg-blue-50'
+      }
+    }
+  }
 }
 ```
 
-**Colors** is special—it defines semantic color schemes (primary, danger, success, etc.) with their variants (filled, outline, ghost, etc.) and the specific styling keys for each combination.
+Colors work through a three-level hierarchy: **color → variant → keys**.
 
-**Everything else** (size, radius, spacing, shadow, etc.) are simply key-value mappings of reusable class presets. You can add any property you need—Lantern doesn't impose restrictions.
+- **Color** (e.g., `primary`, `danger`) represents the semantic meaning
+- **Variant** (e.g., `filled`, `outline`) defines the visual style
+- **Keys** (e.g., `background`, `hover`) map to actual CSS classes
 
-When a component needs styling, it looks up the appropriate color/variant combination and applies the classes from the specified keys. For other properties like size or radius, it simply retrieves the matching preset.
+When you use `<Button color="primary" variant="outline">`, Lantern looks up `colors.primary.outline` and applies the classes from the keys that the button needs (defined in its spec).
+
+**2. Props** — Simple key-value mappings
+
+```typescript
+theme = {
+  size: {
+    sm: 'h-8 px-3 text-sm',
+    md: 'h-10 px-4 text-base',
+    lg: 'h-12 px-6 text-lg'
+  },
+  radius: {
+    none: 'rounded-none',
+    sm: 'rounded-sm',
+    md: 'rounded-md',
+    full: 'rounded-full'
+  },
+  shadow: {
+    sm: 'shadow-sm',
+    md: 'shadow-md',
+    lg: 'shadow-lg'
+  }
+}
+```
+
+Everything else (size, radius, spacing, shadow, etc.) are straightforward presets. When a component **receives a prop** like `size="lg"`, Lantern retrieves `theme.size.lg` and applies those classes.
+
+:::warning Important Distinction
+Theme props are only applied if the component **accepts that prop**. Adding `spacing` to your theme doesn't automatically make it available—you need to add `spacing?: string` to your component's props first.
+
+```vue
+<!-- This works if Button has a 'size' prop -->
+<Button size="lg">Click me</Button>
+
+<!-- This won't work unless Button explicitly accepts 'spacing' -->
+<Button spacing="comfortable">Click me</Button>
+```
+:::
+
+**You're not limited to size and radius**—add whatever your design system needs: `spacing`, `elevation`, `typography`, etc. Just remember to add the corresponding props to components that should use them.
 
 → **[Explore the Theme System in depth](./theme-system)**
 
