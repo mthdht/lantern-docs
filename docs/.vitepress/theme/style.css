@@ -1,0 +1,11 @@
+.demo-preview {
+    /* Ensure good spacing for demo content */
+}
+
+/* Style for inline code in demos */
+.demo-preview code {
+    background: var(--vp-c-bg-soft);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
