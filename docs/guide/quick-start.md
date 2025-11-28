@@ -43,119 +43,82 @@ The button automatically uses the defaults from its component spec. No configura
 
 Now let's make it more interesting. Lantern components accept props that map to your theme configuration:
 
-<Demo title="Colors">
-<template #preview>
-<div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-  <Button color="primary">Primary</Button>
-  <Button color="danger">Danger</Button>
-  <Button color="success">Success</Button>
-</div>
-</template>
-<template #code>
+<Demo title="Colors & variants">
+  <template #preview>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+      <Button color="primary">Primary</Button>
+      <Button color="danger">Danger</Button>
+      <Button color="success">Success</Button>
+      <Button color="primary" variant="outline">Primary Outline</Button>
+    <Button color="success" variant="ghost">Success Ghost</Button>
+    </div>
+  </template>
 
-```vue
-<template>
-  <Button color="primary">Primary</Button>
-  <Button color="danger">Danger</Button>
-  <Button color="success">Success</Button>
-</template>
-```
+  <template #code>
 
-</template>
-<template #spec>
+  ```vue
+  <template>
+    <Button color="primary">Primary</Button>
+    <Button color="danger">Danger</Button>
+    <Button color="success">Success</Button>
+    <Button color="primary" variant="outline">Primary Outline</Button>
+    <Button color="success" variant="ghost">Success Ghost</Button>
+  </template>
+  ```
+  </template>
 
-```typescript
-// buttonSpec.ts
-export const buttonSpec: ComponentSpec = {
-    apply: ['hover', 'focus'],
-    class: 'inline-flex items-center gap-2 transition-colors',
-    defaultProps: {
-        color: 'primary',  // ← Default color
-        variant: 'filled',
-        size: 'md',
-        radius: 'md'
-    }
-}
-```
+  <template #spec>
 
-</template>
-<template #theme>
+  ```typescript
+  // buttonSpec.ts
+  export const buttonSpec: ComponentSpec = {
+      apply: ['hover', 'focus'],
+      class: 'inline-flex items-center gap-2 transition-colors',
+      defaultProps: {
+          color: 'primary', 
+          variant: 'filled',
+          size: 'md',
+          radius: 'md'
+      }
+  }
+  ```
 
-```typescript
-// theme.ts
-theme = {
-    colors: {
-        primary: {
-            filled: {
-                background: 'bg-blue-600',
-                foreground: 'text-white',
-                hover: 'hover:bg-blue-700',
-                focus: 'focus:ring-2 focus:ring-blue-500'
-            }
-        },
-        danger: {
-            filled: {
-                background: 'bg-red-600',
-                foreground: 'text-white',
-                hover: 'hover:bg-red-700',
-                focus: 'focus:ring-2 focus:ring-red-500'
-            }
-        },
-        success: {
-            filled: {
-                background: 'bg-green-600',
-                foreground: 'text-white',
-                hover: 'hover:bg-green-700',
-                focus: 'focus:ring-2 focus:ring-green-500'
-            }
-        }
-    }
-}
-```
+  </template>
+  <template #theme>
 
-</template>
-</Demo>
+  ```typescript
+  // theme.ts
+  theme = {
+      colors: {
+          primary: {
+              filled: {
+                  background: 'bg-blue-600',
+                  foreground: 'text-white',
+                  hover: 'hover:bg-blue-700',
+                  focus: 'focus:ring-2 focus:ring-blue-500'
+              }
+          },
+          danger: {
+              filled: {
+                  background: 'bg-red-600',
+                  foreground: 'text-white',
+                  hover: 'hover:bg-red-700',
+                  focus: 'focus:ring-2 focus:ring-red-500'
+              }
+          },
+          success: {
+              filled: {
+                  background: 'bg-green-600',
+                  foreground: 'text-white',
+                  hover: 'hover:bg-green-700',
+                  focus: 'focus:ring-2 focus:ring-green-500'
+              }
+          }
+      }
+  }
+  ```
 
-<Demo title="Variants">
-<template #preview>
-<div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-  <Button color="primary" variant="filled">Filled</Button>
-  <Button color="primary" variant="outline">Outline</Button>
-  <Button color="primary" variant="ghost">Ghost</Button>
-</div>
-</template>
-<template #code>
-
-```vue
-<template>
-  <Button color="primary" variant="filled">Filled</Button>
-  <Button color="primary" variant="outline">Outline</Button>
-  <Button color="primary" variant="ghost">Ghost</Button>
-</template>
-```
-
-</template>
-</Demo>
-
-<Demo title="Sizes">
-<template #preview>
-<div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-  <Button size="sm">Small</Button>
-  <Button size="md">Medium</Button>
-  <Button size="lg">Large</Button>
-</div>
-</template>
-<template #code>
-
-```vue
-<template>
-  <Button size="sm">Small</Button>
-  <Button size="md">Medium</Button>
-  <Button size="lg">Large</Button>
-</template>
-```
-
-</template>
+  </template>
 </Demo>
 
 **Understanding the props:**
@@ -168,45 +131,107 @@ theme = {
 :::info Theme-Driven Props
 The available values for these props depend entirely on **your theme configuration**. If you define a custom color called `brand` in your theme, you can use `color="brand"`. If you add a size called `xl`, you can use `size="xl"`.
 
-Lantern doesn't hardcode these values—it's all driven by your theme.
+Lantern doesn't hardcode these values, it's all driven by your theme.
+
+To understand how props connect to the theme, see the [Theme System](./theme-system)
+ documentation.
 :::
 
 ## Component States
 
 Buttons support common interactive states:
 
-```vue
-<script setup>
-import { ref } from 'vue'
-import { Button } from '@pharos-labo/lantern/components/button'
+<Demo title="Component states">
+  <template #preview><!-- Disabled --> 
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+      <Button disabled>Disabled</Button>
+      <!-- Loading -->
+      <Button :loading="true">Loading…</Button>
+    </div>
+  </template>
 
-const isLoading = ref(false)
+  <template #code>
 
-const handleClick = () => {
-  isLoading.value = true
-  setTimeout(() => {
-    isLoading.value = false
-  }, 2000)
-}
-</script>
+  ```vue
+  <script setup>
+  import { ref } from 'vue'
+  import { Button } from '@pharos-labo/lantern/components/button'
 
-<template>
-  <div style="display: flex; gap: 1rem; padding: 2rem;">
-    <!-- Disabled state -->
-    <Button disabled>Disabled</Button>
+  const isLoading = ref(false)
+
+  const handleClick = () => {
+    isLoading.value = true
+    setTimeout(() => {
+      isLoading.value = false
+    }, 2000)
+  }
+  </script>
+
+  <template>
+    <div class="flex gap-4 p-8">
+      <!-- Disabled state -->
+      <Button disabled>Disabled</Button>
+      
+      <!-- Loading state -->
+      <Button :loading="isLoading" @click="handleClick">
+        {{ isLoading ? 'Loading...' : 'Click me' }}
+      </Button>
+
+      <!-- Different button types -->
+      <Button type="button">Button</Button>
+      <Button type="submit">Submit</Button>
+      <Button type="reset">Reset</Button>
+    </div>
+  </template>
+  ```
+
+  </template>
+
+  <template #spec>
+
+  ```ts
+  // buttonSpec.ts
+  export const buttonSpec: ComponentSpec = {
+    apply: ['hover', 'focus', 'disabled', 'loading'],
+    class: 'inline-flex items-center gap-2 transition-all',
     
-    <!-- Loading state -->
-    <Button :loading="isLoading" @click="handleClick">
-      {{ isLoading ? 'Loading...' : 'Click me' }}
-    </Button>
-    
-    <!-- Different button types -->
-    <Button type="button">Button</Button>
-    <Button type="submit">Submit</Button>
-    <Button type="reset">Reset</Button>
-  </div>
-</template>
-```
+    defaultProps: {
+      color: 'primary',
+      variant: 'filled',
+      disabled: false,
+      loading: false
+    },
+    disabled: {
+      class: 'opacity-50 pointer-events-none'
+    },
+    loading: {
+      class: 'pointer-events-none opacity-70 cursor-wait'
+    }
+  }
+  ```
+
+  </template>
+
+  <template #theme>
+
+  ```ts
+  // theme.ts
+  theme = {
+    states: {
+      disabled: {
+        opacity: 'opacity-50',
+        cursor: 'cursor-not-allowed'
+      },
+      loading: {
+        spinner: 'animate-spin',
+        opacity: 'opacity-70'
+      }
+    }
+  }
+  ```
+
+  </template>
+</Demo>
 
 When `disabled` or `loading` is true, the button automatically:
 - Becomes non-interactive
@@ -214,161 +239,83 @@ When `disabled` or `loading` is true, the button automatically:
 - Adds proper `aria-disabled` or `aria-busy` attributes
 - Prevents click events
 
-## Composing Components
-
-Real applications need more than buttons. Let's compose multiple components together:
-
-```vue
-<script setup>
-import { ref } from 'vue'
-import { Button } from '@pharos-labo/lantern/components/button'
-import { Alert, AlertClose } from '@pharos-labo/lantern/components/alert'
-import { Card } from '@pharos-labo/lantern/components/card'
-
-const showAlert = ref(false)
-</script>
-
-<template>
-  <div style="max-width: 600px; margin: 2rem auto; display: flex; flex-direction: column; gap: 1.5rem;">
-    <!-- Card containing a form -->
-    <Card color="default" variant="outline">
-      <h2 style="margin: 0 0 1rem 0;">Sign Up</h2>
-      
-      <form @submit.prevent="showAlert = true" style="display: flex; flex-direction: column; gap: 1rem;">
-        <input 
-          type="email" 
-          placeholder="Email" 
-          style="padding: 0.5rem; border: 1px solid #e5e7eb; border-radius: 0.375rem;"
-        />
-        
-        <input 
-          type="password" 
-          placeholder="Password" 
-          style="padding: 0.5rem; border: 1px solid #e5e7eb; border-radius: 0.375rem;"
-        />
-        
-        <Button type="submit" color="primary" variant="filled" size="lg">
-          Create Account
-        </Button>
-      </form>
-    </Card>
-    
-    <!-- Success alert (shown after form submission) -->
-    <Alert 
-      v-if="showAlert" 
-      color="success" 
-      variant="soft"
-      @dismiss="showAlert = false"
-    >
-      <p style="margin: 0;">Account created successfully! Check your email to verify.</p>
-      <AlertClose />
-    </Alert>
-  </div>
-</template>
-```
-
-**What's happening here:**
-
-1. **Card** provides a container with themed styling
-2. **Button** submits the form with appropriate visual weight
-3. **Alert** appears conditionally with a dismiss button
-4. All components share the same theme and work together seamlessly
-
-:::tip Component Composition
-Lantern components are designed to compose naturally. They don't enforce specific layouts or structures—you have full control over how components are arranged and nested.
-:::
-
-## Custom Styling
-
-Sometimes you need to add custom styles beyond what the theme provides. Use the `class` prop:
-
-```vue
-<script setup>
-import { Button } from '@pharos-labo/lantern/components/button'
-</script>
-
-<template>
-  <!-- Add custom classes -->
-  <Button 
-    color="primary" 
-    variant="filled"
-    class="my-custom-button"
-  >
-    Custom Styled
-  </Button>
-</template>
-
-<style scoped>
-.my-custom-button {
-  /* Your custom CSS that extends theme styles */
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.my-custom-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
-</style>
-```
-
-The `class` prop has the **highest priority** in Lantern's style hierarchy. Your custom classes will merge with theme classes, and any conflicts are resolved in favor of your custom classes (thanks to [tailwind-merge](https://github.com/dcastil/tailwind-merge) under the hood).
-
-```vue
-<template>
-  <!-- Theme says bg-blue-600, your class says bg-purple-600 -->
-  <!-- Result: bg-purple-600 wins -->
-  <Button color="primary" class="bg-purple-600">
-    Custom Color
-  </Button>
-</template>
-```
-
 ## Working with Primitives
 
 When you need complete control over styling, use primitives instead of styled components:
 
-```vue
-<script setup>
-import { Button } from '@pharos-labo/lantern/primitives/button'
+<Demo title="Working with primitives">
+  <template #preview>
+      <button class="my-completely-custom-button" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: transform 0.2s; ">
+        Primitive Button
+      </button>
+  </template>
 
-const handleClick = () => {
-  console.log('Button clicked!')
-}
-</script>
+  <template #code>
 
-<template>
-  <Button 
-    @click="handleClick"
-    class="my-completely-custom-button"
-  >
-    Primitive Button
-  </Button>
-</template>
+  ```vue
+  <script setup>
+  import { Button } from '@pharos-labo/lantern/primitives/button'
 
-<style scoped>
-.my-completely-custom-button {
-  /* Full control - no theme classes applied */
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
+  const handleClick = () => {
+    console.log('Button clicked!')
+  }
+  </script>
 
-.my-completely-custom-button:hover {
-  transform: scale(1.05);
-}
+  <template>
+    <Button 
+      @click="handleClick"
+      class="my-completely-custom-button"
+    >
+      Primitive Button
+    </Button>
+  </template>
 
-.my-completely-custom-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-</style>
-```
+  <style scoped>
+  .my-completely-custom-button {
+    /* Full control - no theme classes applied */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .my-completely-custom-button:hover {
+    transform: scale(1.05);
+  }
+
+  .my-completely-custom-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  </style>
+  ```
+
+  </template>
+
+  <template #spec>
+    <div>
+      <p>Primitives do not use a component spec. They provide only:</p>
+      <ul>
+        <li>✅ ARIA accessibility</li>
+        <li>✅ State handling (disabled, loading)</li>
+        <li>✅ Event handling</li>
+        <li>⚠️ No theme integration</li>
+      </ul>
+    </div>
+  </template> 
+
+  <template #theme>
+  <div>
+    <p>Primitives ignore the theme entirely.</p>
+    <p>You are responsible for <strong>100% of the styling</strong>.</p>
+  </div>
+  </template>
+
+</Demo>
 
 **Primitives still provide:**
 - ✅ Accessibility (ARIA attributes)
@@ -391,42 +338,102 @@ For most cases, styled components with the `class` prop offer enough flexibility
 
 Lantern components emit standard Vue events. No special event handling required:
 
-```vue
-<script setup>
-import { Button } from '@pharos-labo/lantern/components/button'
-import { Alert } from '@pharos-labo/lantern/components/alert'
+<Demo title="Handling Events">
+  <template #preview>
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      <Button @click="() => alert('Button clicked!')">
+        Click me
+      </Button>
+      <Alert
+        color="info"
+        variant="soft"
+        @dismiss="() => alert('Alert dismissed')">
+        <p style="margin: 0;">This alert can be dismissed</p>
+        <AlertClose />
+      </Alert>
+    </div>
+  </template>
+  <template #code>
 
-const handleClick = (event) => {
+  ```vue
+  <script setup>
+  import { Button } from '@pharos-labo/lantern/components/button'
+  import { Alert, AlertClose } from '@pharos-labo/lantern/components/alert'
+  const handleClick = (event) => {
   console.log('Button clicked!', event)
-}
-
-const handleDismiss = () => {
+  }
+  const handleDismiss = () => {
   console.log('Alert dismissed')
-}
-</script>
+  }
+  </script>
+  <template>
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      <!-- Button events -->
+      <Button 
+        @click="handleClick"
+        @mouseenter="() => console.log('Mouse entered')"
+        @focus="() => console.log('Button focused')"
+      >
+        Interactive Button
+      </Button>
+  <!-- Alert events -->
+  <Alert 
+    color="info" 
+    variant="soft"
+    @dismiss="handleDismiss"
+  >
+    <p>This alert can be dismissed</p>
+    <AlertClose />
+  </Alert>
+    </div>
+  </template>
+  ```
 
-<template>
-  <div style="display: flex; flex-direction: column; gap: 1rem; padding: 2rem;">
-    <!-- Button events -->
-    <Button 
-      @click="handleClick"
-      @mouseenter="() => console.log('Mouse entered')"
-      @focus="() => console.log('Button focused')"
-    >
-      Interactive Button
-    </Button>
-    
-    <!-- Alert events -->
-    <Alert 
-      color="info" 
-      variant="soft"
-      @dismiss="handleDismiss"
-    >
-      <p>This alert can be dismissed</p>
-    </Alert>
-  </div>
-</template>
-```
+  </template>
+  <template #spec>
+
+  ```typescript
+  // buttonSpec.ts
+  export const buttonSpec: ComponentSpec = {
+      apply: ['hover', 'focus'],
+      class: 'inline-flex items-center gap-2 transition-colors cursor-pointer',
+      defaultProps: {
+          color: 'primary',
+          variant: 'filled'
+      }
+  }
+  // alertSpec.ts
+  export const alertSpec: ComponentSpec = {
+      apply: ['border'],
+      class: 'relative flex gap-3 p-4 rounded-lg',
+      defaultProps: {
+        color: 'slate',
+        variant: 'soft'
+      }
+  }
+  ```
+
+  </template>
+
+  <template #theme>
+
+  ```typescript
+  // theme.ts
+  theme = {
+    colors: {
+      info: {
+        soft: {
+          background: 'bg-blue-50',
+          foreground: 'text-blue-900',
+          border: 'border-blue-200'
+        }
+        }
+    }
+  }
+  ```
+
+  </template>
+</Demo>
 
 ## Next Steps
 

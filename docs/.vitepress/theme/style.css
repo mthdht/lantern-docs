@@ -1,5 +1,7 @@
 .demo-preview {
     /* Ensure good spacing for demo content */
+    display: flex;
+    gap: 16px;
 }
 
 /* Style for inline code in demos */
