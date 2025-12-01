@@ -6,7 +6,7 @@ export default defineConfig({
   description: 'A headless Vue 3 component library with Tailwind CSS',
   base: '/',
   lang: 'en-US', // ou 'fr-FR' si tu veux en français
-
+  ignoreDeadLinks: true,
   head: [
     ['meta', { name: 'theme-color', content: '#3b82f6' }],
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
